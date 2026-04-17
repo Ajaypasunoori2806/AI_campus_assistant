@@ -16,7 +16,12 @@ jobs:
       run: docker build -t ai-campus .
 
     - name: Run container
-      run: docker run -d -p 5000:5000 ai-campus
+      run: |
+        docker run -d -p 8000:8000 --name test-container ai-campus
+        sleep 5
 
     - name: Check running containers
-      run: docker ps
+      run: docker ps -a
+
+    - name: Show logs
+      run: docker logs test-container
