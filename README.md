@@ -1,153 +1,212 @@
 # 🎓 AI Campus Assistant
 
-An AI-powered assistant designed for campus environments that can understand and respond to student and staff queries via text, voice, and images.
+An AI-powered backend service built using FastAPI and deployed using a complete DevOps pipeline with Docker and CI/CD automation.
+
+
+## 🧠 Project Objective
+
+This project demonstrates how to:
+
+* Build a backend application
+* Containerize using Docker
+* Automate deployment using CI/CD
+* Deploy to cloud (AWS EC2)
 
 ---
 
-## 🚀 Features
+## 🏗️ Architecture
 
-- 💬 Conversational AI chatbot
-- 🧠 Context-aware memory (remembers previous messages)
-- 🖼️ Image-based query support (OCR ready)
-- 📚 Handles:
-  - Course information
-  - Timetables
-  - Events
-  - Staff directory
-- 🔐 Ready for secure student-specific data (future scope)
+```
+GitHub → GitHub Actions → AWS EC2 → Docker → FastAPI App
+```
 
-## 🏗️ Project Structure
+---
 
-    ai-campus-assistant/
-    │
-    ├── app/
-    │   ├── main.py              # FastAPI entry point
-    │   ├── config.py            # Environment config
-    │   ├── data/                # Static campus data
-    │   │   └── college_data.py
-    │   ├── routes/
-    │   │   └── chat.py          # API endpoints
-    │   ├── services/
-    │   │   ├── ai_engine.py     # AI logic
-    │   │   ├── ocr.py           # Image text extraction
-    │   │   └── memory.py        # Conversation memory
-    │   └── models/
-    │       └── schemas.py
-    │
-    ├── tests/
-    │   └── test_chat.py
-    │
-    ├── requirements.txt
-    ├── Dockerfile
-    ├── docker-compose.yml
-    ├── .env
-    └── README.md
+# ⚙️ 1. Local Development Setup
 
-
-## ⚙️ Setup & Installation
-
-### 1️⃣ Clone the repository
+Clone the repository:
 
 ```bash
-git clone https://github.com/your-username/your-repo.git
-cd your-repo
+git clone https://github.com/Ajaypasunoori2806/AI_campus_assistant.git
+cd AI_campus_assistant
+```
 
+Create virtual environment:
 
-
-### 2️⃣ Create virtual environment
-
+```bash
 python -m venv venv
 venv\Scripts\activate
+```
 
+Install dependencies:
 
-
-### 3️⃣ Install dependencies
-
+```bash
 pip install -r requirements.txt
+```
 
-
-### 4️⃣ Add environment variables
-
-Create a `.env` file:
-
-env
-OPENAI_API_KEY=your_api_key_here
-
-
-##▶️ Run the Application
+Run application:
 
 ```bash
 uvicorn app.main:app --reload
-
-
-## 🌐 API Documentation
-
-Once running, open:
-
-```
-http://127.0.0.1:8000/docs
-```
-
-Interactive Swagger UI will appear.
-
----
-
-## 🧪 Example API Request
-
-### POST `/chat`
-
-```json
-{
-  "user_id": "1",
-  "message": "What are today's classes?"
-}
 ```
 
 ---
 
-## 🐳 Run with Docker (Optional)
+# 🐳 2. Docker Setup
+
+Build Docker image:
 
 ```bash
-docker-compose up --build
+docker build -t ai-campus .
+```
+
+Run container:
+
+```bash
+docker run -d -p 8000:8000 ai-campus
+```
+
+Check running containers:
+
+```bash
+docker ps
 ```
 
 ---
 
-## 🛠️ Tech Stack
+# ☁️ 3. AWS EC2 Setup (Manual - One Time)
 
-* ⚡ FastAPI
-* 🤖 OpenAI API
-* 🧠 Python
-* 🐳 Docker
-* 🗂️ Modular architecture
+Connect to EC2:
 
----
+```bash
+ssh -i your-key.pem ubuntu@your-ec2-ip
+```
 
-## 📌 Future Enhancements
+Install Docker:
 
-* 🎤 Voice input & speech output
-* 🗄️ Database integration (PostgreSQL)
-* 🔐 Authentication (JWT login)
-* 📊 Admin dashboard
-* 🌐 Frontend UI (React)
+```bash
+sudo apt update
+sudo apt install docker.io -y
+sudo systemctl start docker
+sudo systemctl enable docker
+```
 
----
+Verify Docker:
 
-## 🤝 Contribution
-
-Feel free to fork this repo and contribute!
-
----
-
-## 📄 License
-
-This project is for educational and demonstration purposes.
+```bash
+docker --version
+```
 
 ---
 
-## 👨‍💻 Author
+# 🔐 4. GitHub Secrets Setup
 
-**Ajay Kumar Pasunoori**
-DevOps Engineer
-📧 [pasunoori.a1@gmail.com](mailto:pasunoori.a1@gmail.com)
-🔗 [https://github.com/Ajaypasunoori2806](https://github.com/Ajaypasunoori2806)
+In your repo (Settings → Secrets), add:
+
+```
+EC2_HOST=your-ec2-ip
+EC2_USER=ubuntu
+EC2_KEY=your-private-key
+```
+
+---
+
+# 🔄 5. CI/CD Pipeline (GitHub Actions)
+
+Pipeline file:
+
+```
+.github/workflows/ci.yml
+```
+
+### Pipeline Steps:
+
+1. Code pushed to GitHub
+2. Build Docker image
+3. Save image as `.tar`
+4. Copy to EC2 using SCP
+5. SSH into EC2
+6. Stop old container
+7. Run new container
+
+---
+
+# ▶️ 6. Deployment Flow (Automatic)
+
+Push code:
+
+```bash
+git add .
+git commit -m "update"
+git push
+```
+
+GitHub Actions will:
+
+* Build Docker image
+* Transfer to EC2
+* Deploy automatically
+
+---
+
+# 🔍 7. Debugging Commands (VERY IMPORTANT)
+
+Check running containers:
+
+```bash
+docker ps -a
+```
+
+Check logs:
+
+```bash
+docker logs ai-campus
+```
+
+Stop container:
+
+```bash
+docker stop ai-campus
+```
+
+Remove container:
+
+```bash
+docker rm ai-campus
+```
+
+---
+
+# 📦 Project Structure
+
+```
+app/        → Application code  
+tests/      → Test cases  
+Dockerfile  → Container setup  
+ci.yml      → CI/CD pipeline  
+```
+
+---
+
+# 🧠 Key DevOps Highlights
+
+* Dockerized FastAPI application
+* CI/CD pipeline using GitHub Actions
+* Automated deployment to AWS EC2
+* SSH-based deployment strategy
+
+---
+
+# 📌 Future Improvements
+
+* Kubernetes deployment
+* Terraform automation
+* Monitoring (Prometheus, Grafana)
+
+---
+
+# 📞 Contact
+
+GitHub: [https://github.com/Ajaypasunoori2806](https://github.com/Ajaypasunoori2806)
+
+---
