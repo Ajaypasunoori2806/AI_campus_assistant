@@ -6,3 +6,4 @@ pytesseract
 Pillow
 pytest
 httpx
+python-multipart
